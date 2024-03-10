@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Atividade Exception Descomplica</title>
+  </head>
+  <body>
+    <form id="formulario">
+      <label for="nome">Nome:</label>
+      <input type="text" id="nome" required /><br />
+
+      <label for="idade">Idade:</label>
+      <input type="number" id="idade" required /><br />
+
+      <label for="cargo">Cargo:</label>
+      <input type="text" id="cargo" required /><br />
+
+      <label for="departamento">Departamento (apenas para gerentes):</label>
+      <input type="text" id="departamento" /><br />
+
+      <label for="linguagem">Linguagem (apenas para desenvolvedores):</label>
+      <input type="text" id="linguagem" /><br />
+
+      <button type="button" onclick="criarFuncionarios()">Enviar</button>
+    </form>
+
+    <script>
+      class Funcionario {
+        constructor(nome, idade, cargo) {
+          this.nome = nome;
+          this.idade = idade;
+          this.cargo = cargo;
+        }
+
+        seApresentar() {
+          console.log(
+            `bom dia, meu nome e ${this.nome}, tenho ${this.idade} anos e sou ${this.cargo}.`
+          );
+        }
+
+        trabalhar() {
+          console.log(`${this.nome} esta no trabalho.`);
+        }
+      }
+
+      class Gerente extends Funcionario {
+        constructor(nome, idade, cargo, dpto) {
+          super(nome, idade, cargo);
+
+          this.dpto = dpto;
+        }
+
+        gerenciar() {
+          console.log(
+            `${this.nome} esta gerenciando o departamento ${this.departamento}.`
+          );
+        }
+      }
+
+      class Desenvolvedor extends Funcionario {
+        constructor(nome, idade, cargo, linguagem) {
+          super(nome, idade, cargo);
+
+          this.linguagem = linguagem;
+        }
+
+        programar() {
+          console.log(`${this.nome} programando em ${this.linguagem}.`);
+        }
+      }
+
+      const gerente = new Gerente("Jackson", 40, "Gerente de Projetos", "TI");
+
+      const desenvolvedor = new Desenvolvedor(
+        "Gustavo",
+        25,
+        "Desenvolvedor",
+        "JavaScript"
+      );
+
+      gerente.seApresentar();
+
+      gerente.gerenciar();
+
+      desenvolvedor.seApresentar();
+
+      desenvolvedor.programar();
+
+      function exibirErro(mensagem) {
+        const mensagemErro = document.createElement("p");
+        mensagemErro.style.color = "red";
+        mensagemErro.textContent = mensagem;
+        document.body.appendChild(mensagemErro);
+      }
+
+      function criarFuncionarios() {
+        try {
+          const nome = document.getElementById("nome").value;
+          const idade = parseInt(document.getElementById("idade").value);
+          const cargo = document.getElementById("cargo").value;
+          const departamento = document.getElementById("departamento").value;
+          const linguagem = document.getElementById("linguagem").value;
+
+          if (!nome || !idade || !cargo) {
+            throw new Error("Preencha todos os campos obrigatorios.");
+          }
+
+          if (
+            (cargo === "Gerente" && !departamento) ||
+            (cargo === "Desenvolvedor" && !linguagem)
+          ) {
+            throw new Error("Preencha os campos adicionais corretamente.");
+          }
+
+          const gerente = new Gerente(nome, idade, cargo, departamento);
+          const desenvolvedor = new Desenvolvedor(
+            nome,
+            idade,
+            cargo,
+            linguagem
+          );
+
+          gerente.seApresentar();
+          gerente.gerenciar();
+
+          desenvolvedor.seApresentar();
+          desenvolvedor.programar();
+        } catch (error) {
+          exibirErro(error.message);
+        }
+      }
+    </script>
+  </body>
+</html>
